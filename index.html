@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renewable Energy Project Lifecycle Management System</title>
+<meta name="description" content="Java OOP project by Group 45, B.Tech CSE-DS, NIET Greater Noida. Role-based access and stage-gate lifecycle engine for solar, wind and hydro projects.">
+<style>
+:root{--bg:#f6f8f7;--card:#fff;--ink:#14231c;--muted:#5b6b63;--green:#1f7a4d;--green2:#e3f3ea;--navy:#1d3557;--amber:#c77d0a;--red:#b3261e;--line:#dbe4df}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+a{color:var(--green)}
+header.hero{background:linear-gradient(135deg,#123d2b,#1f7a4d);color:#fff;padding:56px 20px 48px}
+.wrap{max-width:980px;margin:0 auto}
+.hero h1{margin:0 0 10px;font-size:clamp(26px,5vw,40px);line-height:1.2}
+.hero p{margin:0;max-width:640px;opacity:.92;font-size:18px}
+.tags{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
+.tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);padding:4px 12px;border-radius:99px;font-size:13px}
+nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);z-index:5}
+nav .wrap{display:flex;gap:18px;overflow-x:auto;padding:12px 20px;white-space:nowrap}
+nav a{text-decoration:none;color:var(--ink);font-size:14px;font-weight:500}
+nav a:hover{color:var(--green)}
+section{padding:40px 20px}
+h2{margin:0 0 6px;font-size:26px}
+.sub{color:var(--muted);margin:0 0 22px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h3{margin:0 0 6px;font-size:16px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.stages{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.stage{flex:1 1 120px;border-radius:10px;padding:12px 10px;text-align:center;font-size:13px;font-weight:600;border:2px solid var(--line);background:#fff;color:var(--muted);transition:.2s}
+.stage small{display:block;font-weight:400;margin-top:2px;font-size:11px}
+.stage.PLANNED{}
+.stage.IN_PROGRESS{border-color:var(--amber);color:var(--amber);background:#fff7e8}
+.stage.COMPLETED{border-color:var(--green);color:var(--green);background:var(--green2)}
+.stage.current{box-shadow:0 0 0 3px rgba(29,53,87,.25)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+select,button{font:inherit;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+button{cursor:pointer;font-weight:600;background:var(--green);color:#fff;border:0}
+button.alt{background:var(--navy)}
+button.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+button:hover{filter:brightness(1.08)}
+.log{background:#0f1b15;color:#d7efe0;border-radius:10px;padding:14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;min-height:130px;max-height:260px;overflow:auto}
+.log .err{color:#ff9d94}.log .ok{color:#8be0ae}.log .info{color:#a9c7ff}
+.report{margin-top:12px;font-size:14px;background:var(--green2);border-radius:8px;padding:10px 14px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:14px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#eef3f0}
+pre{background:#0f1b15;color:#d7efe0;padding:16px;border-radius:10px;overflow:auto;font-size:13px}
+footer{padding:30px 20px;text-align:center;color:var(--muted);font-size:13px}
+.alt-bg{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<header class="hero"><div class="wrap">
+  <h1>Renewable Energy Project Lifecycle Management System</h1>
+  <p>A Java application that tracks solar, wind and hydro projects from planning to maintenance, with role-based access and stage-gate rules that stop a project from skipping a stage.</p>
+  <div class="tags">
+    <span class="tag">Java OOP</span><span class="tag">JDBC</span><span class="tag">Group 45</span>
+    <span class="tag">SDG 7</span><span class="tag">SDG 9</span><span class="tag">SDG 13</span>
+  </div>
+</div></header>
+
+<nav><div class="wrap">
+  <a href="#problem">Problem</a><a href="#demo">Live demo</a><a href="#design">Design</a>
+  <a href="#features">Features</a><a href="#tests">Testing</a><a href="#code">Code</a><a href="#team">Team</a>
+</div></nav>
+
+<section id="problem"><div class="wrap">
+  <h2>The problem</h2>
+  <p class="sub">Project teams track surveys, permits, equipment and maintenance in separate spreadsheets and emails.</p>
+  <div class="grid">
+    <div class="card"><h3>Missed milestones</h3><p>Nobody can see the true status of a project at a glance.</p></div>
+    <div class="card"><h3>Duplicate records</h3><p>The same equipment or task is entered in several places.</p></div>
+    <div class="card"><h3>Our answer</h3><p>One role-based Java system where every stage, task and equipment item is an object, and invalid moves are rejected.</p></div>
+  </div>
+</div></section>
+
+<section id="demo" class="alt-bg"><div class="wrap">
+  <h2>Try the stage-gate engine</h2>
+  <p class="sub">This is a JavaScript port of the Java <code>advanceStage()</code> logic. Pick a role, then try to break the rules.</p>
+  <div class="controls">
+    <label>Project type
+      <select id="ptype"><option value="Solar|1700">Solar (50 MW)</option><option value="Wind|2800">Wind (50 MW)</option><option value="Hydro|4000">Hydro (50 MW)</option></select>
+    </label>
+    <label>Acting as
+      <select id="role"><option>ProjectManager</option><option>SiteEngineer</option><option>Admin</option></select>
+    </label>
+    <button class="ghost" id="reset">Reset</button>
+  </div>
+  <div class="stages" id="stages"></div>
+  <div class="controls">
+    <button class="alt" id="btnComplete">Complete current stage</button>
+    <button class="alt" id="btnApprove">Approve current stage</button>
+    <button id="btnAdvance">Advance to next stage</button>
+  </div>
+  <div class="log" id="log"></div>
+  <div class="report" id="report"></div>
+</div></section>
+
+<section id="design"><div class="wrap">
+  <h2>Object-oriented design</h2>
+  <p class="sub">Inheritance, abstraction, polymorphism and interfaces carry the design.</p>
+  <div class="grid">
+    <div class="card"><h3>User (abstract)</h3><p>ProjectManager, SiteEngineer and Admin each answer <code>canPerform(action)</code> in their own way, so no long if-chains.</p></div>
+    <div class="card"><h3>Project (abstract)</h3><p>SolarProject, WindProject and HydroProject extend it and each implement <code>calcOutput()</code>.</p></div>
+    <div class="card"><h3>Interfaces</h3><p><code>Notifiable</code> and <code>Reportable</code> give unrelated classes a shared ability.</p></div>
+    <div class="card"><h3>Custom exceptions</h3><p>InvalidStageTransition, MissingApproval and DuplicateProject explain exactly what went wrong.</p></div>
+  </div>
+  <h3 style="margin-top:28px">Lifecycle rules</h3>
+  <p>Six stages: <b>Planning → Approval → Installation → Commissioning → Operation → Maintenance</b>. A project moves ahead only when the current stage is Completed and approved by a Project Manager. No stage may be skipped or repeated.</p>
+</div></section>
+
+<section id="features" class="alt-bg"><div class="wrap">
+  <h2>Features</h2>
+  <p class="sub">&nbsp;</p>
+  <table>
+    <tr><th>Feature</th><th>What it does</th></tr>
+    <tr><td>Role-based login</td><td>Project manager, site engineer and admin have different permissions.</td></tr>
+    <tr><td>Project and task tracking</td><td>Create projects, assign tasks, track five statuses.</td></tr>
+    <tr><td>Equipment and maintenance</td><td>Serial numbers, next service dates and service logs.</td></tr>
+    <tr><td>Audit log</td><td>Records who did what and when.</td></tr>
+    <tr><td>Reports</td><td>Stage completion, delays and capacity in MW.</td></tr>
+    <tr><td>Safe saving</td><td>JDBC transactions: all changes saved, or none.</td></tr>
+  </table>
+</div></section>
+
+<section id="tests"><div class="wrap">
+  <h2>Testing</h2>
+  <p class="sub">Unit, integration and end-to-end tests with sample solar, wind and hydro data.</p>
+  <table>
+    <tr><th>ID</th><th>Scenario</th><th>Expected</th></tr>
+    <tr><td>T4</td><td>Site engineer tries to approve a stage</td><td>Rejected by role-based access</td></tr>
+    <tr><td>T6</td><td>Advance before stage is completed</td><td>InvalidStageTransitionException</td></tr>
+    <tr><td>T7</td><td>Advance without manager approval</td><td>MissingApprovalException</td></tr>
+    <tr><td>T8</td><td>Register an existing project</td><td>DuplicateProjectException</td></tr>
+    <tr><td>T9</td><td>Failure while saving stage and tasks</td><td>Rollback, nothing saved</td></tr>
+  </table>
+</div></section>
+
+<section id="code" class="alt-bg"><div class="wrap">
+  <h2>Source code</h2>
+  <p class="sub">The full single-file listing is in <code>src/App.java</code>. Compile and run with the standard JDK:</p>
+  <pre>javac src/App.java
+java -cp src App</pre>
+  <p>Expected output:</p>
+  <pre>Rejected: Planning is not completed yet
+Rejected: Planning has no manager approval
+Rajasthan Solar Park: 50.0 MW, stage Approval, 1/6 stages completed, output 85000.0 MWh/yr
+[Divyansh] Stage moved to Approval</pre>
+</div></section>
+
+<section id="team"><div class="wrap">
+  <h2>Team (Group 45)</h2>
+  <p class="sub">B.Tech CSE-DS, NIET Greater Noida. Course: Object Oriented Techniques using JAVA (CCSE0355).</p>
+  <div class="grid">
+    <div class="card"><h3>Gunesh Gupta</h3><p>Frontend developer (UI/UX)</p></div>
+    <div class="card"><h3>Harshdeep Singh</h3><p>Backend developer</p></div>
+    <div class="card"><h3>Divyansh Singh</h3><p>Project manager</p></div>
+    <div class="card"><h3>Raj Sharma</h3><p>Database administrator</p></div>
+    <div class="card"><h3>Nishchay Raj</h3><p>Testing and security lead</p></div>
+  </div>
+  <p style="margin-top:18px">Faculty: Dr. Priti Singh, Mr. Varnit Shukla</p>
+</div></section>
+
+<footer>Renewable Energy Project Lifecycle Management System · Final PBL Report · 20/11/2026</footer>
+
+<script>
+const NAMES=["Planning","Approval","Installation","Commissioning","Operation","Maintenance"];
+const PERMS={ProjectManager:["CREATE_PROJECT","APPROVE_STAGE","ASSIGN_TASK"],SiteEngineer:["UPDATE_TASK","LOG_MAINTENANCE"],Admin:["MANAGE_USERS"]};
+let stages,current;
+const $=id=>document.getElementById(id);
+function reset(){
+  stages=NAMES.map(n=>({name:n,status:"PLANNED",approved:false}));
+  stages[0].status="IN_PROGRESS";current=0;
+  $("log").innerHTML="";log("Project created with 6 stages. Planning is In Progress.","info");render();
+}
+function log(msg,cls){const d=document.createElement("div");d.className=cls||"";d.textContent="> "+msg;$("log").appendChild(d);$("log").scrollTop=1e9}
+function can(action){return PERMS[$("role").value].includes(action)}
+function render(){
+  $("stages").innerHTML=stages.map((s,i)=>`<div class="stage ${s.status} ${i===current?"current":""}">${i+1}. ${s.name}<small>${s.status.replace("_"," ")}${s.approved?" · approved":""}</small></div>`).join("");
+  const [type,hrs]=$("ptype").value.split("|");
+  const done=stages.filter(s=>s.status==="COMPLETED").length;
+  $("report").textContent=`${type} project: 50.0 MW, stage ${stages[current].name}, ${done}/6 stages completed, output ${50*hrs} MWh/yr`;
+}
+$("btnComplete").onclick=()=>{stages[current].status="COMPLETED";log(stages[current].name+" marked Completed.","ok");render()};
+$("btnApprove").onclick=()=>{
+  if(!can("APPROVE_STAGE")){log("MissingApprovalException: "+$("role").value+" may not approve stages","err");return}
+  stages[current].approved=true;log(stages[current].name+" approved by manager.","ok");render()
+};
+$("btnAdvance").onclick=()=>{
+  const now=stages[current];
+  if(now.status!=="COMPLETED"){log("InvalidStageTransitionException: "+now.name+" is not completed yet","err");return}
+  if(!now.approved){log("MissingApprovalException: "+now.name+" has no manager approval","err");return}
+  if(current===stages.length-1){log("InvalidStageTransitionException: Already at the final stage","err");return}
+  current++;stages[current].status="IN_PROGRESS";log("Moved to "+stages[current].name+".","ok");render()
+};
+$("reset").onclick=reset;$("ptype").onchange=reset;
+reset();
+</script>
+</body>
+</html>
